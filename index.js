@@ -36,7 +36,9 @@ mqttClient.on('connect', () => {
 });
 
 mqttClient.on('message', (topic, message) => {
-    io.to(topic).emit('mqtt-message', { topic, message: message.toString() });
+    // Broadcast to ALL connected clients. They will filter by topic locally.
+    // This is more robust than Socket.IO rooms for this scale.
+    io.emit('mqtt-message', { topic, message: message.toString() });
 });
 
 mqttClient.on('error', (err) => {
